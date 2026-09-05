@@ -1,183 +1,221 @@
-import Button from "@/components/ui/Button";
-import Card from "@/components/ui/Card";
-import Badge from "@/components/ui/Badge";
-import { Logo, BuilderIcon, PulseIcon, ShieldIcon, ZapIcon, BranchIcon } from "@/components/ui/icons";
+import Link from "next/link";
+import {
+  ArrowRightIcon,
+  BoltIcon,
+  CheckIcon,
+  ClockIcon,
+  FlowIcon,
+  LockIcon,
+  ShieldIcon,
+  TeamIcon,
+  WebhookIcon,
+} from "@/components/ui/icons";
 
-const features = [
+const FEATURES = [
   {
-    title: "Visual builder",
-    description:
-      "Design complex workflows with a drag-and-drop canvas. Connect triggers, steps, and conditions in minutes — no code required.",
-    icon: <BuilderIcon />,
+    Icon: FlowIcon,
+    title: "Workflows with a shape",
+    body: "Name it, describe it, choose how it fires. Draft, active, paused or archived — the state is always visible.",
   },
   {
-    title: "Real-time monitoring",
-    description:
-      "Watch every execution live. See failures the moment they happen and drill into detailed run logs from one dashboard.",
-    icon: <PulseIcon />,
+    Icon: ShieldIcon,
+    title: "Two roles, enforced twice",
+    body: "Admins manage the directory, members keep their own workspace. Checked in the app and again by Postgres policies.",
   },
   {
-    title: "Enterprise-grade security",
-    description:
-      "Every run is isolated and encrypted. Role-based access and full audit trails keep your automations safe and compliant.",
-    icon: <ShieldIcon />,
+    Icon: BoltIcon,
+    title: "An activity trail",
+    body: "Every create, edit and role change is written by a database trigger, so the timeline cannot drift from reality.",
+  },
+  {
+    Icon: WebhookIcon,
+    title: "Triggers that fit",
+    body: "Schedules, incoming webhooks, events, or a manual run when you would rather press the button yourself.",
   },
 ];
 
-const tiers = [
+const ROLES = [
   {
-    name: "Starter",
-    price: "0",
-    tagline: "For side projects and learning",
-    features: ["Up to 3 workflows", "500 runs / month", "Community support"],
-    href: "/signup",
-    label: "Start for free",
-    popular: false,
+    name: "Member",
+    tagline: "The everyday account",
+    Icon: TeamIcon,
+    abilities: [
+      "Create and run their own workflows",
+      "Edit their profile, photo and password",
+      "See their own activity history",
+      "Pick a light, dark or automatic theme",
+    ],
   },
   {
-    name: "Pro",
-    price: "19",
-    tagline: "For growing teams",
-    features: ["Unlimited workflows", "50k runs / month", "Priority support", "Scheduled triggers"],
-    href: "/signup",
-    label: "Start free trial",
-    popular: true,
-  },
-  {
-    name: "Business",
-    price: "49",
-    tagline: "For organizations at scale",
-    features: ["Unlimited runs", "SSO & audit logs", "Dedicated support", "Custom integrations"],
-    href: "/signup",
-    label: "Contact sales",
-    popular: false,
+    name: "Administrator",
+    tagline: "Everything a member can do, plus the directory",
+    Icon: ShieldIcon,
+    featured: true,
+    abilities: [
+      "Create accounts and set their role",
+      "Change any member's role or status",
+      "Delete accounts, with the last admin protected",
+      "See every workflow and every event",
+    ],
   },
 ];
 
-export default function MarketingPage() {
+export default function LandingPage() {
   return (
-    <div className="marketing">
-      <header className="mkt-nav">
-        <a href="#top" className="brand">
-          <Logo />
-          NovaFlow
-        </a>
-        <nav className="mkt-nav-links">
-          <a href="#features">Features</a>
-          <a href="#pricing">Pricing</a>
-        </nav>
-        <div className="mkt-nav-actions">
-          <Button href="/login" variant="secondary" size="sm">
-            Sign in
-          </Button>
-          <Button href="/signup" size="sm">
-            Get started
-          </Button>
+    <>
+      <section className="hero">
+        <div className="hero__text rise">
+          <p className="eyebrow">Workflow automation</p>
+          <h1 className="display">
+            Automations your team can <span className="gradient-text">actually read</span>
+          </h1>
+          <p className="lede">
+            NovaFlow keeps every automation, every role and every change in one
+            place — with permissions enforced in the database, not just the
+            interface.
+          </p>
+          <div className="cluster" style={{ marginTop: "0.5rem" }}>
+            <Link href="/signup" className="btn btn--primary btn--lg">
+              Create your workspace
+              <ArrowRightIcon size={18} className="btn__icon" />
+            </Link>
+            <Link href="/login" className="btn btn--glass btn--lg">
+              Sign in
+            </Link>
+          </div>
+          <p className="muted" style={{ fontSize: "0.875rem" }}>
+            The first account becomes the administrator.
+          </p>
         </div>
-      </header>
 
-      <main id="top">
-        <section className="mkt-hero">
-          <div>
-            <h1>
-              Build workflows that <span>run themselves</span>.
-            </h1>
-            <p>
-              NovaFlow lets you design, automate, and monitor your business processes from a single
-              beautiful dashboard.
-            </p>
-            <div className="mkt-hero-actions">
-              <Button href="/signup" size="lg">
-                Get started free
-              </Button>
-              <Button href="/dashboard" variant="ghost" size="lg">
-                View live demo
-              </Button>
-            </div>
+        {/* A miniature of the real dashboard, built from the same primitives. */}
+        <div className="hero__preview glass rise" aria-hidden="true">
+          <div className="cluster cluster--between">
+            <span className="eyebrow">This week</span>
+            <span className="badge badge--positive">
+              <span className="badge__dot" />
+              4 running
+            </span>
           </div>
 
-          <div className="mkt-hero-visual">
-            <div className="flow-node trigger">
-              <ZapIcon width="18" height="18" />
-              <span>Trigger · New form submit</span>
-            </div>
-            <div className="flow-connector" />
-            <div className="flow-node">
-              <BranchIcon width="18" height="18" />
-              <span>Route by team</span>
-            </div>
-            <div className="flow-connector" />
-            <div className="flow-node">
-              <PulseIcon width="18" height="18" />
-              <span>Create ticket</span>
-            </div>
-            <div className="flow-status">
-              <span>All systems running</span>
-              <Badge tone="success">Healthy</Badge>
-            </div>
-          </div>
-        </section>
-
-        <section id="features" className="mkt-section">
-          <div className="mkt-section-head">
-            <h2>Everything you need to automate</h2>
-            <p>Small, focused tools that combine into powerful end-to-end workflows.</p>
-          </div>
-          <div className="features-grid">
-            {features.map((feature) => (
-              <Card key={feature.title} className="feature-card">
-                <div className="feature-icon">{feature.icon}</div>
-                <h3 className="card-title">{feature.title}</h3>
-                <p>{feature.description}</p>
-              </Card>
+          <div className="grid" style={{ ["--min" as string]: "104px" }}>
+            {[
+              { label: "Workflows", value: "12" },
+              { label: "Running", value: "4" },
+              { label: "Members", value: "7" },
+            ].map((tile) => (
+              <div key={tile.label} className="hero__tile">
+                <p className="stat__value" style={{ fontSize: "1.5rem" }}>
+                  {tile.value}
+                </p>
+                <p className="stat__label">{tile.label}</p>
+              </div>
             ))}
           </div>
-        </section>
 
-        <section id="pricing" className="mkt-section">
-          <div className="mkt-section-head">
-            <h2>Pricing that scales with you</h2>
-            <p>Start free. Upgrade when your automations grow.</p>
+          <div className="chart" style={{ height: "84px" }}>
+            {[38, 62, 45, 80, 55, 92, 70, 48, 66, 100, 74, 58].map((height, index) => (
+              <div className="chart__col" key={index}>
+                <div
+                  className="chart__bar"
+                  style={{ height: `${height}%`, animationDelay: `${index * 40}ms` }}
+                />
+              </div>
+            ))}
           </div>
-          <div className="pricing-grid">
-            {tiers.map((tier) => (
-              <Card
-                key={tier.name}
-                className={`pricing-card${tier.popular ? " pricing-popular" : ""}`}
-              >
-                {tier.popular && <Badge tone="accent">Most popular</Badge>}
-                <h3 className="card-title">{tier.name}</h3>
-                <div className="pricing-price">
-                  ${tier.price}
-                  <small> /month</small>
+
+          <div className="hero__row">
+            <span className="feed__marker">
+              <ClockIcon size={14} />
+            </span>
+            <span className="grow truncate">Nightly customer sync</span>
+            <span className="badge badge--info">Schedule</span>
+          </div>
+          <div className="hero__row">
+            <span className="feed__marker">
+              <LockIcon size={14} />
+            </span>
+            <span className="grow truncate">Access review</span>
+            <span className="badge badge--caution">Paused</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <header className="section__header">
+          <p className="eyebrow">What you get</p>
+          <h2 className="title-1">Built like a product, not a template</h2>
+        </header>
+
+        <div className="grid grid--wide">
+          {FEATURES.map(({ Icon, title, body }) => (
+            <article key={title} className="card glass card--interactive">
+              <span className="stat__icon" style={{ marginBottom: "0.9rem" }}>
+                <Icon size={18} />
+              </span>
+              <h3 className="title-3">{title}</h3>
+              <p className="muted" style={{ marginTop: "0.4rem" }}>
+                {body}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section">
+        <header className="section__header">
+          <p className="eyebrow">Permissions</p>
+          <h2 className="title-1">Two roles, no ambiguity</h2>
+          <p className="lede">
+            Row level security decides what each account can read and write, so a
+            forged request fails at the database rather than the button.
+          </p>
+        </header>
+
+        <div className="grid grid--wide">
+          {ROLES.map(({ name, tagline, Icon, abilities, featured }) => (
+            <article
+              key={name}
+              className={featured ? "card glass role-card role-card--featured" : "card glass role-card"}
+            >
+              <div className="cluster">
+                <span className="stat__icon">
+                  <Icon size={18} />
+                </span>
+                <div>
+                  <h3 className="title-2">{name}</h3>
+                  <p className="muted" style={{ fontSize: "0.875rem" }}>
+                    {tagline}
+                  </p>
                 </div>
-                <p className="t-desc">{tier.tagline}</p>
-                <ul className="pricing-features">
-                  {tier.features.map((feature) => (
-                    <li key={feature}>
-                      <span className="check">✓</span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <Button href={tier.href} variant={tier.popular ? "primary" : "ghost"} block>
-                  {tier.label}
-                </Button>
-              </Card>
-            ))}
-          </div>
-        </section>
+              </div>
 
-        <section className="mkt-cta">
-          <h2>Ready to automate?</h2>
-          <p>Create your account in under a minute. No credit card required.</p>
-          <Button href="/signup" size="lg">
-            Create your account
-          </Button>
-        </section>
-      </main>
+              <ul className="role-card__list">
+                {abilities.map((ability) => (
+                  <li key={ability}>
+                    <CheckIcon size={16} />
+                    {ability}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </section>
 
-      <footer className="mkt-footer">© 2026 NovaFlow — demo build, no real data.</footer>
-    </div>
+      <section className="section">
+        <div className="card glass cta">
+          <h2 className="title-1">Ready in about a minute</h2>
+          <p className="lede">
+            Run the migrations, create the first account, and you have a working
+            workspace with roles, profiles and an audit trail.
+          </p>
+          <Link href="/signup" className="btn btn--primary btn--lg">
+            Get started
+            <ArrowRightIcon size={18} className="btn__icon" />
+          </Link>
+        </div>
+      </section>
+    </>
   );
 }

@@ -1,25 +1,36 @@
+import Image from "next/image";
+import type { CSSProperties } from "react";
+import { avatarGradient, initials } from "@/utils/format";
+
 type AvatarProps = {
-  name: string;
-  size?: "sm" | "md" | "lg";
+  name: string | null;
+  email: string;
+  src?: string | null;
+  size?: number;
+  className?: string;
 };
 
-const sizes = {
-  sm: "avatar-sm",
-  md: "",
-  lg: "avatar-lg",
-};
+/**
+ * Photo when there is one, otherwise initials on a gradient derived from the
+ * email — so every account has a stable, distinguishable mark with no network
+ * request and no placeholder asset.
+ */
+export function Avatar({ name, email, src, size = 40, className }: AvatarProps) {
+  const { from, to } = avatarGradient(email);
 
-export default function Avatar({ name, size = "md" }: AvatarProps) {
-  const initials = name
-    .split(" ")
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+  const style = {
+    "--avatar-size": `${size}px`,
+    "--avatar-from": from,
+    "--avatar-to": to,
+  } as CSSProperties;
 
   return (
-    <span className={`avatar ${sizes[size]}`.trim()} aria-hidden="true">
-      {initials}
+    <span className={className ? `avatar ${className}` : "avatar"} style={style}>
+      {src ? (
+        <Image src={src} alt="" width={size} height={size} />
+      ) : (
+        initials(name, email)
+      )}
     </span>
   );
 }

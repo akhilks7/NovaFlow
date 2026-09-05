@@ -1,7 +1,6 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import { login } from "@/utils/auth/actions";
-import { Logo } from "@/components/ui/icons";
+import Link from "next/link";
+import { LoginForm } from "@/components/auth/LoginForm";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -10,51 +9,22 @@ export const metadata: Metadata = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; message?: string }>;
+  searchParams: Promise<{ next?: string; error?: string }>;
 }) {
-  const { error, message } = await searchParams;
+  const { next, error } = await searchParams;
 
   return (
-    <div className="auth-card">
-      <header className="auth-head">
-        <div className="logo-placeholder">
-          <Logo />
-        </div>
-        <h1>Sign in</h1>
-        <p>Use your NovaFlow Account</p>
+    <>
+      <header className="stack stack--sm" style={{ marginBottom: "1.75rem" }}>
+        <p className="eyebrow">Welcome back</p>
+        <h1 className="title-1">Sign in to NovaFlow</h1>
       </header>
 
-      <form className="auth-form" action={login}>
-        {(error || message) && (
-          <p className={`auth-alert${error ? " auth-alert-error" : ""}`}>{error ?? message}</p>
-        )}
+      <LoginForm next={next} initialError={error} />
 
-        <div className="input-group">
-          <input type="email" id="email" name="email" placeholder=" " autoComplete="email" required />
-          <label htmlFor="email">Email or phone</label>
-        </div>
-
-        <div className="input-group">
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder=" "
-            autoComplete="current-password"
-            required
-          />
-          <label htmlFor="password">Enter your password</label>
-        </div>
-
-        <div className="auth-actions">
-          <Link href="/signup" className="btn-secondary">
-            Create account
-          </Link>
-          <button type="submit" className="btn-primary">
-            Next
-          </button>
-        </div>
-      </form>
-    </div>
+      <p className="muted" style={{ marginTop: "1.5rem", textAlign: "center" }}>
+        New here? <Link href="/signup">Create an account</Link>
+      </p>
+    </>
   );
 }

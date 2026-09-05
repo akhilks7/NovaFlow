@@ -1,28 +1,31 @@
 import type { ReactNode } from "react";
-import { createClient } from "@/utils/supabase/server";
-import Sidebar from "./components/Sidebar";
-import Topbar from "./components/Topbar";
+import { cookies } from "next/headers";
+import { Sidebar } from "@/components/shell/Sidebar";
+import { Topbar } from "@/components/shell/Topbar";
+import { isThemePreference, THEME_COOKIE } from "@/components/theme/theme";
+import { isAdmin, requireProfile } from "@/utils/auth/dal";
 
-function displayName(fullName: unknown, email?: string) {
-  if (typeof fullName === "string" && fullName.trim()) return fullName;
-  return email?.split("@")[0] ?? "User";
-}
-
+/**
+ * Authenticated shell. `requireProfile` re-verifies the user against Supabase
+ * on every render — the proxy redirect is only an optimistic first pass.
+ */
 export default async function AppLayout({ children }: { children: ReactNode }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const name = displayName(user?.user_metadata?.full_name, user?.email);
-  const email = user?.email ?? "";
+  const profile = await requireProfile();
+  const stored = (await cookies()).get(THEME_COOKIE)?.value;
+  const themePreference = isThemePreference(stored) ? stored : "system";
+  const admin = isAdmin(profile);
 
   return (
-    <div className="app-shell">
-      <Sidebar name={name} email={email} />
-      <div className="app-main">
-        <Topbar name={name} />
-        <main className="app-content">{children}</main>
+    <div className="shell">
+      <div className="shell__sidebar">
+        <Sidebar profile={profile} />
+      </div>
+
+      <div className="shell__main">
+        <Topbar profile={profile} isAdmin={admin} themePreference={themePreference} />
+        <main id="main" className="shell__content">
+          {children}
+        </main>
       </div>
     </div>
   );

@@ -1,84 +1,72 @@
 import type { Metadata } from "next";
-import Avatar from "@/components/ui/Avatar";
-import Badge from "@/components/ui/Badge";
-import Button from "@/components/ui/Button";
-import Card from "@/components/ui/Card";
+import { cookies } from "next/headers";
+import { PasswordForm } from "@/components/settings/PasswordForm";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { isThemePreference, THEME_COOKIE } from "@/components/theme/theme";
+import { SignOutIcon } from "@/components/ui/icons";
+import { requireProfile } from "@/utils/auth/dal";
+import { signout } from "@/utils/auth/actions";
 
 export const metadata: Metadata = {
-  title: "Profile",
+  title: "Settings",
 };
 
-export default function ProfileSettingsPage() {
+export default async function SettingsPage() {
+  const profile = await requireProfile();
+  const stored = (await cookies()).get(THEME_COOKIE)?.value;
+  const preference = isThemePreference(stored) ? stored : "system";
+
   return (
-    <div className="settings-grid">
-      <Card title="Workspace">
-        <dl className="kv">
-          <div>
-            <dt>Name</dt>
-            <dd>NovaFlow</dd>
-          </div>
-          <div>
-            <dt>Plan</dt>
-            <dd>
-              <Badge tone="accent">Pro</Badge>
-            </dd>
-          </div>
-          <div>
-            <dt>Members</dt>
-            <dd>4</dd>
-          </div>
-          <div>
-            <dt>Created</dt>
-            <dd>Jan 2026</dd>
-          </div>
-        </dl>
-      </Card>
+    <div className="stack stack--lg rise">
+      <header className="page-header">
+        <div className="page-header__text">
+          <p className="eyebrow">Preferences</p>
+          <h1 className="title-1">Settings</h1>
+          <p className="muted">Appearance, security and session.</p>
+        </div>
+      </header>
 
-      <Card title="Profile">
-        <div className="edit-card">
-          <div className="edit-avatar">
-            <Avatar name="Akhil K S" size="lg" />
-          </div>
-          <div>
-            <p className="t-desc">
-              Your avatar and details are shown across NovaFlow. Demo build — no upload.
+      <section className="card glass">
+        <div className="card__header">
+          <div className="card__title">
+            <h2 className="title-2">Appearance</h2>
+            <p className="muted">
+              Choose a fixed theme, or follow your device automatically.
             </p>
-            <Button href="/settings" variant="ghost" size="sm">
-              Choose file
-            </Button>
           </div>
+          <ThemeToggle preference={preference} />
         </div>
+      </section>
 
-        <div className="form-grid">
-          <div className="field">
-            <label htmlFor="first">First name</label>
-            <input id="first" defaultValue="Akhil" />
+      <div className="split">
+        <section className="card glass">
+          <div className="card__header">
+            <div className="card__title">
+              <h2 className="title-2">Password</h2>
+              <p className="muted">
+                Confirm your current password to set a new one.
+              </p>
+            </div>
           </div>
-          <div className="field">
-            <label htmlFor="last">Last name</label>
-            <input id="last" defaultValue="K S" />
-          </div>
-          <div className="field">
-            <label htmlFor="email">Email</label>
-            <input id="email" type="email" defaultValue="akhil@novaf.io" />
-          </div>
-          <div className="field">
-            <label htmlFor="role">Role</label>
-            <input id="role" defaultValue="Platform Engineer" />
-          </div>
-          <div className="field field-full">
-            <label htmlFor="bio">Bio</label>
-            <textarea
-              id="bio"
-              defaultValue="Building NovaFlow to make automation effortless."
-            />
-          </div>
-        </div>
+          <PasswordForm />
+        </section>
 
-        <div className="card-actions">
-          <Button size="sm">Save changes</Button>
-        </div>
-      </Card>
+        <section className="card glass">
+          <div className="card__header">
+            <div className="card__title">
+              <h2 className="title-2">Session</h2>
+              <p className="muted">Signed in as {profile.email}.</p>
+            </div>
+          </div>
+
+          <form action={signout}>
+            <button type="submit" className="btn btn--danger btn--block">
+              <SignOutIcon size={17} className="btn__icon" />
+              Sign out
+            </button>
+          </form>
+        </section>
+      </div>
     </div>
   );
 }
