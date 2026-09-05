@@ -6,6 +6,11 @@ import { isThemePreference, THEME_COOKIE } from "@/components/theme/theme";
 import { LogoMark } from "@/components/ui/icons";
 import { getSessionUserId } from "@/utils/auth/dal";
 
+const SECTIONS = [
+  { href: "/#features", label: "Features" },
+  { href: "/#roles", label: "Roles" },
+];
+
 export default async function MarketingLayout({ children }: { children: ReactNode }) {
   const stored = (await cookies()).get(THEME_COOKIE)?.value;
   const preference = isThemePreference(stored) ? stored : "system";
@@ -13,32 +18,44 @@ export default async function MarketingLayout({ children }: { children: ReactNod
 
   return (
     <div className="site">
-      <header className="site-header glass">
-        <Link href="/" className="sidebar__brand">
-          <span className="brand-mark">
-            <LogoMark size={17} />
-          </span>
-          NovaFlow
-        </Link>
+      {/* Same pill as the authenticated shell, so the two halves of the product
+          read as one. */}
+      <div className="navbar-wrap">
+        <nav className="navbar glass" aria-label="Main">
+          <Link href="/" className="brand">
+            <span className="brand-mark">
+              <LogoMark size={17} />
+            </span>
+            NovaFlow
+          </Link>
 
-        <div className="cluster" style={{ ["--gap" as string]: "0.4rem" }}>
-          <ThemeButton preference={preference} />
-          {signedIn ? (
-            <Link href="/dashboard" className="btn btn--primary btn--sm">
-              Open dashboard
-            </Link>
-          ) : (
-            <>
-              <Link href="/login" className="btn btn--ghost btn--sm site-header__signin">
-                Sign in
+          <div className="navbar__links">
+            {SECTIONS.map(({ href, label }) => (
+              <Link key={href} href={href} className="navbar__link">
+                {label}
               </Link>
-              <Link href="/signup" className="btn btn--primary btn--sm">
-                Get started
+            ))}
+          </div>
+
+          <div className="navbar__actions">
+            <ThemeButton preference={preference} />
+            {signedIn ? (
+              <Link href="/dashboard" className="btn btn--primary btn--sm">
+                Open dashboard
               </Link>
-            </>
-          )}
-        </div>
-      </header>
+            ) : (
+              <>
+                <Link href="/login" className="btn btn--ghost btn--sm navbar__signin">
+                  Sign in
+                </Link>
+                <Link href="/signup" className="btn btn--primary btn--sm">
+                  Get started
+                </Link>
+              </>
+            )}
+          </div>
+        </nav>
+      </div>
 
       <main id="main">{children}</main>
 

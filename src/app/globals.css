@@ -94,7 +94,7 @@
 
   /* Shell metrics */
   --sidebar-w: 264px;
-  --topbar-h: 64px;
+  --navbar-h: 60px;
 
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
     "Segoe UI Variable", "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial,
@@ -497,15 +497,12 @@ h4 {
   opacity: 0.5;
 }
 
-/* Full-bleed chrome carries its own single-side border, so the wrap-around
-   hairline would draw a stray line along the screen edges.
+/* The auth aside is full-bleed and carries its own single-side border, so the
+   wrap-around hairline would draw a stray line along the screen edges.
 
    `.dialog` opts out for a different reason: it is a scroll container, and a
    pseudo-element inset by -1px counts as scrollable overflow — enough to raise
    a 1px scrollbar on both axes of an otherwise perfectly fitting panel. */
-.sidebar::after,
-.topbar::after,
-.site-header::after,
 .auth__aside::after,
 .dialog::after {
   content: none;
@@ -931,7 +928,8 @@ h4 {
 
 /* ==========================================================================
    9. Application shell
-   Sidebar + topbar on large screens; topbar + drawer below 1024px.
+   Sidebar rail plus a floating pill bar over the content column. Below 1024px
+   the rail becomes a drawer.
    ========================================================================== */
 
 .shell {
@@ -953,10 +951,10 @@ h4 {
 .shell__content {
   flex: 1;
   width: 100%;
-  max-width: 1360px;
+  max-width: 1240px;
   margin-inline: auto;
-  padding: clamp(1rem, 0.6rem + 1.6vw, 2rem);
-  padding-bottom: calc(clamp(1rem, 0.6rem + 1.6vw, 2rem) + env(safe-area-inset-bottom));
+  padding: 0 clamp(0.75rem, 0.4rem + 1.6vw, 2rem);
+  padding-bottom: calc(clamp(1.5rem, 1rem + 2vw, 3rem) + env(safe-area-inset-bottom));
 }
 
 @media (min-width: 1024px) {
@@ -983,37 +981,36 @@ h4 {
   border-width: 0 1px 0 0;
 }
 
-.sidebar__brand {
+.sidebar__account {
   display: flex;
   align-items: center;
+  gap: 0.7rem;
+  margin-top: auto;
+  padding: 0.55rem 0.6rem;
+  border-radius: var(--r-md);
+  color: var(--text-secondary);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.sidebar__account:hover {
+  background: var(--fill);
+  color: var(--text);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
   gap: 0.6rem;
+  flex-shrink: 0;
   padding: 0.35rem 0.5rem;
   color: var(--text);
-  font-size: 1.0625rem;
+  font-size: 1rem;
   font-weight: 660;
   letter-spacing: -0.03em;
 }
 
-.sidebar__brand:hover {
+.brand:hover {
   color: var(--text);
-}
-
-.sidebar__nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.sidebar__section {
-  padding: 1rem 0.7rem 0.35rem;
-}
-
-.sidebar__footer {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
 }
 
 .brand-mark {
@@ -1028,15 +1025,21 @@ h4 {
   box-shadow: var(--shadow-brand);
 }
 
-/* --- Nav item --- */
+/* --- Destination list (sidebar and drawer) --- */
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  overflow-y: auto;
+}
 
 .nav-item {
-  position: relative;
   display: flex;
   align-items: center;
   gap: 0.7rem;
   padding: 0.6rem 0.7rem;
-  min-height: 44px;
+  min-height: 46px;
   border-radius: var(--r-md);
   color: var(--text-secondary);
   font-size: 0.9375rem;
@@ -1052,10 +1055,9 @@ h4 {
 }
 
 .nav-item[aria-current="page"] {
-  background: var(--glass-strong);
-  color: var(--text);
+  background: color-mix(in srgb, var(--brand-500) 14%, transparent);
+  color: var(--brand-500);
   font-weight: 590;
-  box-shadow: var(--shadow-sm), inset 0 1px 0 var(--glass-specular);
 }
 
 .nav-item[aria-current="page"] .nav-item__icon {
@@ -1076,28 +1078,47 @@ h4 {
   white-space: nowrap;
 }
 
-/* --- Topbar --- */
+/* --- Floating pill bar --- */
 
-.topbar {
+.navbar-wrap {
   position: sticky;
   top: 0;
-  z-index: 40;
+  z-index: 60;
+  padding: clamp(0.6rem, 0.4rem + 0.6vw, 1rem) clamp(0.75rem, 0.4rem + 1.6vw, 2rem);
+}
+
+/* Deliberately opaque rather than glass: it sits directly over scrolling
+   content, and a translucent bar leaves that content legible through it. */
+.navbar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  min-height: var(--navbar-h);
+  padding: 0.4rem 0.5rem 0.4rem 0.6rem;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-pill);
+  background:
+    linear-gradient(var(--glass-strong), var(--glass-strong)),
+    var(--canvas);
+  box-shadow: var(--shadow-md), inset 0 1px 0 var(--glass-specular);
+}
+
+.navbar__lead {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  min-height: var(--topbar-h);
-  padding: 0.6rem clamp(1rem, 0.6rem + 1.6vw, 2rem);
-  border-radius: 0;
-  border-width: 0 0 1px;
-}
-
-.topbar__heading {
+  gap: 0.4rem;
   min-width: 0;
-  flex: 1;
+  justify-self: start;
 }
 
-.topbar__title {
-  font-size: 1.0625rem;
+.navbar__title {
+  min-width: 0;
+  padding-left: 0.35rem;
+  font-size: 1rem;
   font-weight: 640;
   letter-spacing: -0.025em;
   overflow: hidden;
@@ -1105,18 +1126,89 @@ h4 {
   white-space: nowrap;
 }
 
-.topbar__actions {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+.navbar__links {
+  display: none;
+  gap: 0.15rem;
+  justify-self: center;
 }
 
-.topbar__menu-button {
-  display: inline-grid;
+.navbar__link {
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--r-pill);
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  font-weight: 530;
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.navbar__link:hover {
+  background: var(--fill);
+  color: var(--text);
+}
+
+.navbar__link[aria-current="page"] {
+  color: var(--brand-500);
+  background: color-mix(in srgb, var(--brand-500) 14%, transparent);
+  font-weight: 580;
+}
+
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  justify-self: end;
+}
+
+/* Account pill, mirroring the primary pill in the reference navbar. */
+.navbar__user {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.6rem 0.25rem 0.25rem;
+  min-height: 40px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-pill);
+  background: var(--fill);
+  color: var(--text);
+  font-size: 0.875rem;
+  font-weight: 560;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.navbar__user:hover {
+  background: var(--fill-hover);
+}
+
+.navbar__user-name {
+  display: none;
+  max-width: 14ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 720px) {
+  .navbar__user-name {
+    display: block;
+  }
+}
+
+@media (min-width: 900px) {
+  .navbar__links {
+    display: flex;
+  }
+
+  /* The centred links carry the context once there is room for them. */
+  .navbar__title {
+    display: none;
+  }
 }
 
 @media (min-width: 1024px) {
-  .topbar__menu-button {
+  .navbar__menu-button {
     display: none;
   }
 }
@@ -1137,19 +1229,21 @@ h4 {
   position: fixed;
   inset: 0 auto 0 0;
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
   width: min(84vw, var(--sidebar-w));
+  padding: 1rem 0.85rem;
   border-radius: 0 var(--r-xl) var(--r-xl) 0;
   border-width: 0 1px 0 0;
   animation: slide-in-left var(--dur-slow) var(--ease-out);
 }
 
-.drawer .sidebar {
-  height: 100%;
-  border: 0;
-  background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  box-shadow: none;
+.drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 @media (min-width: 1024px) {
@@ -1158,6 +1252,7 @@ h4 {
     display: none;
   }
 }
+
 
 /* ==========================================================================
    10. Data display
@@ -1845,26 +1940,13 @@ code {
   min-height: 100svh;
 }
 
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.7rem clamp(1rem, 0.6rem + 2vw, 2.5rem);
-  border-radius: 0;
-  border-width: 0 0 1px;
-}
-
 /* The primary CTA is enough on the narrowest screens. */
-.site-header__signin {
+.navbar__signin {
   display: none;
 }
 
 @media (min-width: 520px) {
-  .site-header__signin {
+  .navbar__signin {
     display: inline-flex;
   }
 }

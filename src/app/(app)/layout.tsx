@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { cookies } from "next/headers";
+import { Navbar } from "@/components/shell/Navbar";
 import { Sidebar } from "@/components/shell/Sidebar";
-import { Topbar } from "@/components/shell/Topbar";
 import { isThemePreference, THEME_COOKIE } from "@/components/theme/theme";
 import { isAdmin, requireProfile } from "@/utils/auth/dal";
 
@@ -18,11 +18,11 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   return (
     <div className="shell">
       <div className="shell__sidebar">
-        <Sidebar profile={profile} />
+        <Sidebar profile={profile} isAdmin={admin} />
       </div>
 
       <div className="shell__main">
-        <Topbar profile={profile} isAdmin={admin} themePreference={themePreference} />
+        <Navbar profile={profile} isAdmin={admin} themePreference={themePreference} />
         <main id="main" className="shell__content">
           {children}
         </main>

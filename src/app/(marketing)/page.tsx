@@ -141,7 +141,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" id="features">
         <header className="section__header">
           <p className="eyebrow">What you get</p>
           <h2 className="title-1">Built like a product, not a template</h2>
@@ -162,7 +162,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" id="roles">
         <header className="section__header">
           <p className="eyebrow">Permissions</p>
           <h2 className="title-1">Two roles, no ambiguity</h2>

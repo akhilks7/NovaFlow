@@ -25,7 +25,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
     <main id="main" className="auth">
       {/* Decorative panel; hidden below 960px so the form owns small screens. */}
       <aside className="auth__aside glass">
-        <Link href="/" className="sidebar__brand">
+        <Link href="/" className="brand">
           <span className="brand-mark">
             <LogoMark size={17} />
           </span>
@@ -60,7 +60,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
 
       <section className="auth__panel">
         <div className="auth__panel-inner">
-          <Link href="/" className="sidebar__brand auth__mobile-brand">
+          <Link href="/" className="brand auth__mobile-brand">
             <span className="brand-mark">
               <LogoMark size={17} />
             </span>

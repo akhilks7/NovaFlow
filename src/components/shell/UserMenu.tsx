@@ -1,18 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Avatar } from "@/components/ui/Avatar";
-import {
-  ChevronDownIcon,
-  SettingsIcon,
-  SignOutIcon,
-  UserIcon,
-} from "@/components/ui/icons";
+import { ChevronDownIcon, SignOutIcon } from "@/components/ui/icons";
 import { signout } from "@/utils/auth/actions";
 import { titleCase } from "@/utils/format";
 import type { Profile } from "@/utils/types";
 
+/**
+ * Account pill on the right of the navbar. Destinations live in the navbar
+ * itself, so this holds identity and sign-out only.
+ */
 export function UserMenu({ profile }: { profile: Profile }) {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
@@ -37,12 +35,13 @@ export function UserMenu({ profile }: { profile: Profile }) {
     };
   }, [open]);
 
+  const displayName = profile.full_name ?? profile.email;
+
   return (
     <div className="menu-anchor" ref={anchorRef}>
       <button
         type="button"
-        className="btn btn--ghost"
-        style={{ paddingInline: "0.4rem" }}
+        className="navbar__user"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-haspopup="menu"
@@ -51,8 +50,9 @@ export function UserMenu({ profile }: { profile: Profile }) {
           name={profile.full_name}
           email={profile.email}
           src={profile.avatar_url}
-          size={30}
+          size={28}
         />
+        <span className="navbar__user-name">{displayName}</span>
         <ChevronDownIcon size={15} />
         <span className="visually-hidden">Account menu</span>
       </button>
@@ -67,7 +67,7 @@ export function UserMenu({ profile }: { profile: Profile }) {
               size={38}
             />
             <span className="person__text">
-              <span className="person__name">{profile.full_name ?? "Unnamed"}</span>
+              <span className="person__name">{displayName}</span>
               <span className="person__meta">{profile.email}</span>
             </span>
           </div>
@@ -77,27 +77,6 @@ export function UserMenu({ profile }: { profile: Profile }) {
               {titleCase(profile.role)}
             </span>
           </div>
-
-          <hr className="divider" />
-
-          <Link
-            href="/profile"
-            className="menu__item"
-            role="menuitem"
-            onClick={() => setOpen(false)}
-          >
-            <UserIcon size={17} />
-            Your profile
-          </Link>
-          <Link
-            href="/settings"
-            className="menu__item"
-            role="menuitem"
-            onClick={() => setOpen(false)}
-          >
-            <SettingsIcon size={17} />
-            Settings
-          </Link>
 
           <hr className="divider" />
 

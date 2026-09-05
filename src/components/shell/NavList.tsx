@@ -4,18 +4,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { matchNavItem, visibleNavItems } from "@/components/shell/navigation";
 
-type SidebarNavProps = {
+type NavListProps = {
   isAdmin: boolean;
-  /** Called after a navigation, so the mobile drawer can close itself. */
+  /** Supplied by the mobile drawer so choosing a destination closes it. */
   onNavigate?: () => void;
 };
 
-export function SidebarNav({ isAdmin, onNavigate }: SidebarNavProps) {
+/** Vertical destination list. Shared by the sidebar and the mobile drawer. */
+export function NavList({ isAdmin, onNavigate }: NavListProps) {
   const pathname = usePathname();
   const active = matchNavItem(pathname);
 
   return (
-    <nav className="sidebar__nav" aria-label="Main">
+    <nav className="nav-list" aria-label="Main">
       {visibleNavItems(isAdmin).map(({ href, label, Icon, adminOnly }) => (
         <Link
           key={href}
